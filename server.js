@@ -33,8 +33,6 @@ io.on("connection", (socket) => {
   socket.emit("newuserid", socket.id);
   socket.on("codechange", (value, roomId) => {
     try {
-      console.log(value);
-      console.log(roomId);
       if (roomId === "") return;
       else {
         rooms[roomId].forEach((element) => {
@@ -78,6 +76,9 @@ io.on("connection", (socket) => {
         } else {
           rooms[jroomid].push(socket.id);
         }
+        rooms[jroomid].forEach((element) => {
+          socket.to(element).emit("members", rooms[jroomid]);
+        });
         socket.emit("members", rooms[jroomid]);
         socket.emit("joined", jroomid);
       }
@@ -149,6 +150,9 @@ io.on("connection", (socket) => {
 
   socket.on("run", async (language, code, input) => {
     try {
+      
+      if(language==="python")
+         language+=3;
       const options = {
         method: "POST",
         url: "https://online-code-compiler.p.rapidapi.com/v1/",
@@ -168,13 +172,14 @@ io.on("connection", (socket) => {
       try {
         const response = await axios.request(options);
         socket.emit("output", response.data);
-
+        console.log(response.data);
         const roomid = users[socket.id];
         if (roomid === undefined || roomid === null) return;
         rooms[roomid].forEach((element) => {
           socket.to(element).emit("output", response.data);
         });
       } catch (error) {
+        console.log(error);
         socket.emit("runtimeerror");
       }
     } catch (error) {
