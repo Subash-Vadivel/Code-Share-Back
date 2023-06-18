@@ -29,7 +29,6 @@ function getRandomNumberNotInRooms() {
 //connection
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
   socket.emit("newuserid", socket.id);
   socket.on("codechange", (value, roomId) => {
     try {
