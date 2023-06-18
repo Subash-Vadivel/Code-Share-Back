@@ -2,7 +2,6 @@ const { WebSocketServer } = require('ws');
 const http = require('http');
 const server = http.createServer();
 const wsServer = new WebSocketServer({ server });
-const {uuidv4:uuid}=require('uuid');
 
 
 const app = require('./app');
@@ -31,7 +30,7 @@ const rooms = {};
 
 wsServer.on('connection', function(connection) {
   // Generate a unique code for every user
-  const userId = uuid();
+  const userId = 44455;
   console.log(`Recieved a new connection.`);
 
   // Store the new connection and handle messages
